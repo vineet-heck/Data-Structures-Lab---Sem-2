@@ -1,0 +1,166 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+struct Node* head = NULL;
+
+void display() {
+   
+   if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+void insert(int num) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = num;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        struct Node* temp = head;
+        while (temp->next != NULL) temp = temp->next;
+        temp->next = newNode;
+        newNode->prev = temp;
+	}
+	printf("Inserted successfully\n");
+}
+
+void deleteNumber(int num) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = head;
+    while (temp != NULL && temp->data != num) {
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Number %d not found\n", num);
+        return;
+    }
+
+    if (temp->prev != NULL) temp->prev->next = temp->next;
+    else head = temp->next; // deleting head
+    if (temp->next != NULL) temp->next->prev = temp->prev;
+
+    free(temp);
+
+    printf("List after deletion: ");
+    display();
+     
+}
+
+void reverseList() {
+if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = NULL;
+    struct Node* curr = head;
+
+    while (curr != NULL) {
+        temp = curr->prev;
+        curr->prev = curr->next;
+        curr->next = temp;
+        curr = curr->prev;
+    }
+    if (temp != NULL) head = temp->prev;
+
+    display();
+
+}
+void concatenate() {
+int n, x;
+    scanf("%d", &n);
+    if (n <= 0) {
+        printf("Second list is empty\n");
+        return;
+    }
+
+    struct Node* second = NULL, *tail = NULL;
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &x);
+        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode->data = x;
+        newNode->next = NULL;
+        newNode->prev = NULL;
+
+        if (second == NULL) {
+            second = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            newNode->prev = tail;
+            tail = newNode;
+        }
+    }
+
+    if (head == NULL) {
+        head = second;
+    } else {
+        struct Node* temp = head;
+        while (temp->next != NULL) temp = temp->next;
+        temp->next = second;
+        second->prev = temp;
+    }
+    display();
+	
+}
+
+int main() {
+    int choice, num;
+
+    while (1) {
+        printf("Enter operation\n1: Insert\n2: Delete\n3: Display\n4: Reverse\n5: Concatenate\n6: Exit\n");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                scanf("%d", &num);
+                insert(num);
+                break;
+
+            case 2:
+                scanf("%d", &num);
+                deleteNumber(num);
+                break;
+
+            case 3:
+                display();
+                break;
+
+            case 4:
+                reverseList();
+                break;
+
+            case 5:
+                concatenate();
+                break;
+
+            case 6:
+                printf("Exit\n");
+                exit(0);
+
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+
+    return 0;
+}
